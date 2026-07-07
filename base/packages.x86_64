@@ -54,11 +54,10 @@ greetd-regreet
 firefox
 
 # Fonts and theme assets
-ttf-inter
+inter-font
 ttf-jetbrains-mono
 noto-fonts
 papirus-icon-theme
-bibata-cursor-theme
 
 # Utilities
 git
