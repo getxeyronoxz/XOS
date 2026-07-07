@@ -1,0 +1,19 @@
+configuration {
+    modi: "drun,run,window";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    font: "Inter 11";
+    location: center;
+    yoffset: -120;
+    width: 36;
+    lines: 8;
+    columns: 1;
+    terminal: "foot";
+    drun-display-format: "{name}";
+    hide-scrollbar: true;
+    display-drun: "Applications";
+    display-run: "Run";
+    display-window: "Windows";
+}
+
+@theme "xos"

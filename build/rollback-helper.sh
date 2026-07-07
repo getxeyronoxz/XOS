@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# XOS Btrfs snapshot rollback helper script
+set -euo pipefail
+
+SNAPSHOT_DIR="/.snapshots"
+BOOT_ENTRIES_DIR="/boot/loader/entries"
+ACTIVE_ENTRY_FILE="/boot/loader/entries/xos.conf"
+
+log() {
+    echo "==> $1"
+}
+
+error() {
+    echo "ERROR: $1" >&2
+    exit 1
+}
+
+# Ensure root privileges
+if [[ $EUID -ne 0 ]]; then
+   error "This script must be run as root."
+fi
+
+list_snapshots() {
+    if [[ ! -d "${SNAPSHOT_DIR}" ]]; then
+        log "No snapshots directory found at ${SNAPSHOT_DIR}."
+        return
+    fi
+    log "Available snapshots:"
+    for snap in "${SNAPSHOT_DIR}"/*; do
+        if [[ -d "${snap}" ]]; then
+            echo "  - $(basename "${snap}")"
+        fi
+    done
+}
+
+generate_boot_entries() {
+    if [[ ! -d "${SNAPSHOT_DIR}" ]]; then
+        log "No snapshots found to generate boot entries for."
+        return
+    fi
+
+    # Read base boot entry to copy options
+    if [[ ! -f "${ACTIVE_ENTRY_FILE}" ]]; then
+        # Try to find any other xos entry or fallback
+        ACTIVE_ENTRY_FILE=$(find "${BOOT_ENTRIES_DIR}" -name "*.conf" | head -n1 || true)
+        if [[ -z "${ACTIVE_ENTRY_FILE}" ]]; then
+            log "WARNING: No systemd-boot loader entries found at ${BOOT_ENTRIES_DIR}."
+            return
+        fi
+    fi
+
+    log "Generating boot entries from base: ${ACTIVE_ENTRY_FILE}"
+    
+    for snap in "${SNAPSHOT_DIR}"/*; do
+        if [[ ! -d "${snap}" ]]; then
+            continue
+        fi
+
+        local snap_name
+        snap_name=$(basename "${snap}")
+        local entry_file="${BOOT_ENTRIES_DIR}/xos-rollback-${snap_name}.conf"
+
+        if [[ -f "${entry_file}" ]]; then
+            continue # already exists
+        fi
+
+        log "Creating rollback boot entry: ${entry_file}"
+        
+        # Copy base entry, modifying Title and Options
+        while IFS= read -r line; do
+            if [[ "${line}" =~ ^title ]]; then
+                echo "title   XOS Rollback (${snap_name})"
+            elif [[ "${line}" =~ ^options ]]; then
+                # Replace subvol=@ with subvol=/.snapshots/snap_name
+                local new_opts
+                new_opts=$(echo "${line}" | sed -E "s/subvol=[^ ]+/subvol=\/\.snapshots\/${snap_name}/")
+                echo "${new_opts}"
+            else
+                echo "${line}"
+            fi
+        done < "${ACTIVE_ENTRY_FILE}" > "${entry_file}"
+        
+        chmod 644 "${entry_file}"
+    done
+}
+
+restore_snapshot() {
+    local target="$1"
+    local snap_path="${SNAPSHOT_DIR}/${target}"
+
+    if [[ -z "${target}" ]]; then
+        error "Usage: xos-rollback restore <snapshot_name>"
+    fi
+
+    if [[ ! -d "${snap_path}" ]]; then
+        error "Snapshot '${target}' does not exist at ${snap_path}."
+    fi
+
+    log "Restoring system to snapshot: ${target}"
+    
+    # In Btrfs, we rename the active subvolume '@' to '@_old',
+    # and create a snapshot of the target to '@'
+    # We must mount the Btrfs root (subvolid=5) first
+    local mount_point="/tmp/btrfs-root"
+    mkdir -p "${mount_point}"
+    
+    # Find root device
+    local root_dev
+    root_dev=$(findmnt -n -o SOURCE /)
+    
+    log "Mounting Btrfs root of ${root_dev}..."
+    mount -o subvolid=5 "${root_dev}" "${mount_point}" || error "Failed to mount Btrfs root."
+
+    # Perform rename and snapshot clone
+    local backup_name
+    backup_name="@_old_$(date +%Y%m%d%H%M%S)"
+    log "Moving active @ subvolume to ${backup_name}..."
+    mv "${mount_point}/@" "${mount_point}/${backup_name}" || error "Failed to move active subvolume."
+
+    log "Cloning snapshot ${target} to active subvolume @..."
+    btrfs subvolume snapshot "${mount_point}/.snapshots/${target}" "${mount_point}/@" || {
+        # Restore backup if failed
+        log "CRITICAL ERROR: Failed to clone snapshot. Reverting active subvolume..."
+        mv "${mount_point}/${backup_name}" "${mount_point}/@"
+        umount "${mount_point}"
+        error "Restore failed."
+    }
+
+    log "Unmounting Btrfs root..."
+    umount "${mount_point}"
+    rmdir "${mount_point}"
+
+    log "System restore completed. Please reboot to apply changes."
+}
+
+# CLI Interface
+case "${1:-}" in
+    list)
+        list_snapshots
+        ;;
+    generate)
+        generate_boot_entries
+        ;;
+    restore)
+        restore_snapshot "${2:-}"
+        ;;
+    *)
+        echo "XOS Rollback Tool"
+        echo "Usage: $0 {list | generate | restore <snapshot_name>}"
+        exit 1
+        ;;
+esac

@@ -1,0 +1,41 @@
+name: build
+
+on:
+  push:
+    branches: [main, master, dev]
+  workflow_dispatch:
+
+jobs:
+  iso-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev build-essential pkg-config
+
+      - name: Build custom XOS apps and daemons
+        run: |
+          chmod +x build/apps-build.sh
+          ./build/apps-build.sh
+
+      - name: Validate configs and binaries
+        run: |
+          chmod +x build/validate.sh
+          ./build/validate.sh
+
+      - name: Build ISO in Docker
+        run: |
+          chmod +x build/*.sh
+          docker build -t xos-builder -f build/Dockerfile .
+          mkdir -p output
+          docker run --rm --privileged -v "$PWD/output:/xos/output" xos-builder
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xos-iso
+          path: output/*.iso
+          retention-days: 7

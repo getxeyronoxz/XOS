@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# XOS live environment first-login setup
+if [[ ! -f "${HOME}/.config/xos/first-login-done" ]]; then
+    mkdir -p "${HOME}/.config/xos"
+    swww init 2>/dev/null || true
+    swww img /usr/share/xos/wallpapers/default.jpg 2>/dev/null || true
+    touch "${HOME}/.config/xos/first-login-done"
+fi

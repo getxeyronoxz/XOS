@@ -1,0 +1,6 @@
+**/target/
+work/
+output/
+.git/
+.cargo/
+.agents/

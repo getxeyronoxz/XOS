@@ -1,0 +1,69 @@
+# XOS Phase 1 — Foundation package list
+# Base system
+base
+base-devel
+linux-zen
+linux-firmware
+linux-firmware-marvell
+arch-install-scripts
+btrfs-progs
+dosfstools
+efibootmgr
+zram-generator
+grub
+syslinux
+
+# Init and core services
+systemd
+systemd-resolvconf
+sudo
+polkit
+polkit-gnome
+dbus
+
+# Networking
+networkmanager
+openssh
+
+# Audio
+pipewire
+pipewire-alsa
+pipewire-pulse
+wireplumber
+
+# Wayland compositor and desktop shell
+hyprland
+xorg-xwayland
+waybar
+foot
+rofi-wayland
+mako
+hyprlock
+swww
+wl-clipboard
+cliphist
+grim
+slurp
+brightnessctl
+
+# Login greeter
+greetd
+greetd-regreet
+
+# Browser
+firefox
+
+# Fonts and theme assets
+ttf-inter
+ttf-jetbrains-mono
+noto-fonts
+papirus-icon-theme
+bibata-cursor-theme
+
+# Utilities
+git
+curl
+wget
+htop
+nano
+vim

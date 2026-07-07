@@ -1,0 +1,19 @@
+[package]
+name = "xos-screenshot"
+version = "0.1.0"
+edition = "2021"
+description = "XOS screenshot tool (grim + slurp wrapper)"
+license = "MIT"
+
+[[bin]]
+name = "xos-screenshot"
+path = "src/main.rs"
+
+[dependencies]
+gtk4 = { version = "0.9", features = ["v4_14"] }
+libadwaita = { version = "0.7", features = ["v1_5"] }
+glib = "0.20"
+
+[profile.release]
+lto = true
+codegen-units = 1

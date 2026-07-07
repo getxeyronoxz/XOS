@@ -1,0 +1,17 @@
+[package]
+name = "xos-control-center"
+version = "0.1.0"
+edition = "2021"
+description = "XOS Control Center settings app"
+license = "MIT"
+
+[dependencies]
+gtk4 = { version = "0.9", features = ["v4_14"] }
+libadwaita = { version = "0.7", features = ["v1_5"] }
+glib = "0.20"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+
+[profile.release]
+lto = true
+codegen-units = 1

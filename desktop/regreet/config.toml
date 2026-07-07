@@ -1,0 +1,10 @@
+[background]
+path = "/usr/share/xos/wallpapers/default.jpg"
+fit = "Cover"
+
+[GTK]
+application_prefer_dark_theme = true
+theme_name = "Adwaita-dark"
+icon_theme_name = "Papirus-Dark"
+cursor_theme_name = "Bibata-Modern-Dark"
+font_name = "Inter 11"

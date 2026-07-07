@@ -1,0 +1,45 @@
+# Build output
+output/
+work/
+*.iso
+
+# Rust
+target/
+**/*.rs.bk
+.agents/
+..agents/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# XOS Compiled Binaries
+base/airootfs/usr/local/bin/xos-app-store
+base/airootfs/usr/local/bin/xos-archive-tool
+base/airootfs/usr/local/bin/xos-automation-builder
+base/airootfs/usr/local/bin/xos-automation-engine
+base/airootfs/usr/local/bin/xos-battery-daemon
+base/airootfs/usr/local/bin/xos-control-center
+base/airootfs/usr/local/bin/xos-fan-control
+base/airootfs/usr/local/bin/xos-file-manager
+base/airootfs/usr/local/bin/xos-notes
+base/airootfs/usr/local/bin/xos-notification-center
+base/airootfs/usr/local/bin/xos-permission-daemon
+base/airootfs/usr/local/bin/xos-quick-settings
+base/airootfs/usr/local/bin/xos-resource-daemon
+base/airootfs/usr/local/bin/xos-screenshot
+base/airootfs/usr/local/bin/xos-system-monitor
+base/airootfs/usr/local/bin/xos-thermal-daemon
+base/airootfs/usr/local/bin/xos-update-manager

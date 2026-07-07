@@ -1,0 +1,13 @@
+[Unit]
+Description=Greetd Login Manager
+After=systemd-user-sessions.service plymouth-quit.service
+After=rc-local.service
+
+[Service]
+ExecStart=greetd
+Restart=always
+RestartSec=1
+
+[Install]
+Alias=display-manager.service
+WantedBy=multi-user.target

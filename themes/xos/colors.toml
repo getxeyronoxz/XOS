@@ -1,0 +1,30 @@
+# XOS GTK color palette
+# Background: #1A1A2E
+# Surface: #16213E
+# Panel: #0F3460
+# Accent: #5294E2
+# Text Primary: #E0E0E0
+# Text Secondary: #9E9E9E
+
+[colors]
+background = "#1A1A2E"
+surface = "#16213E"
+panel = "#0F3460"
+accent = "#5294E2"
+text_primary = "#E0E0E0"
+text_secondary = "#9E9E9E"
+success = "#4CAF50"
+warning = "#FF9800"
+error = "#F44336"
+
+[fonts]
+ui = "Inter"
+terminal = "JetBrains Mono"
+reading = "Noto Sans"
+
+[icons]
+theme = "Papirus-Dark"
+
+[cursor]
+theme = "Bibata-Modern-Dark"
+size = 24

@@ -1,0 +1,41 @@
+name: lint
+
+on:
+  push:
+    branches: [main, master, dev, 'feature/**', 'fix/**']
+  pull_request:
+    branches: [main, master, dev]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev build-essential pkg-config
+
+      - name: Build custom XOS apps and daemons
+        run: |
+          chmod +x build/apps-build.sh
+          ./build/apps-build.sh
+
+      - name: Validate Phase 1 & 2 configs
+        run: |
+          chmod +x build/validate.sh
+          ./build/validate.sh
+
+      - name: ShellCheck build scripts
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          shellcheck build/*.sh base/profiledef.sh
+
+  json-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Waybar JSON
+        run: python3 -m json.tool desktop/waybar/config > /dev/null

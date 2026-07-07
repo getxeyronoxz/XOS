@@ -1,0 +1,69 @@
+* {
+    background-color: #1A1A2E;
+    text-color: #E0E0E0;
+    border-color: #5294E2;
+    selected-normal-foreground: #FFFFFF;
+    selected-normal-background: #5294E2;
+    active-foreground: #5294E2;
+    urgent-foreground: #F44336;
+    alternate-normal-background: #16213E;
+    alternate-active-background: #0F3460;
+}
+
+window {
+    background-color: #1A1A2E;
+    border: 2px;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+element {
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+element selected {
+    background-color: #5294E2;
+    text-color: #FFFFFF;
+}
+
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+}
+
+entry {
+    background-color: #16213E;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+inputbar {
+    children: [prompt, entry];
+}
+
+prompt {
+    background-color: #16213E;
+    text-color: #5294E2;
+    padding: 12px;
+    border-radius: 8px 0 0 8px;
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    spacing: 4px;
+    fixed-height: 360px;
+}
+
+message {
+    background-color: #16213E;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+textbox {
+    background-color: #16213E;
+    text-color: #E0E0E0;
+}
