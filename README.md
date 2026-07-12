@@ -1,4 +1,6 @@
-# XOS — Your Computer. Your Resources. Your Control.
+# XOS — Your Computer. Your Resources. Your Control. 
+
+## That time was unstable and also not guarantee by me.
 
 XOS is an Arch-based, privacy-first workstation operating system tailored for developers, security auditors, researchers, and power users. It enforces full resource ownership, strict app sandboxing, and complete system telemetry transparency.
 
